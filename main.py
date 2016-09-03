@@ -1,10 +1,10 @@
-## Instagram image downloader
+## Instagram image/video downloader
 ## Created by Pranav Sricharan
 ## For bugs please report to pranav.sricharan@gmail.com
 ## Enjoy using this application
 import urllib.request
 import re
-print("Instagram image downloader")
+print("Instagram image/video downloader")
 print("Developed by @pranavsricharan")
 print()
 ch = 'y'
