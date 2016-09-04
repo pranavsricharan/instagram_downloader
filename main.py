@@ -10,7 +10,15 @@ print()
 ch = 'y'
 while ch == 'y':
     url = input("Enter an Instagram url: ")
-    data = urllib.request.urlopen(url)
+    while True:
+        try:
+            
+            data = urllib.request.urlopen(url)
+            break
+        except urllib.error.HTTPError:
+            print("\n"*3 + "OOPS...Something went wrong...")
+            print("The URL you entered doesn't seem to be valid... Please make sure that the URL you've entered is valid or a public instagram post")
+            url = input("Enter a valid Instagram public url: ")
     data = data.read()
     data = str(data)
     # Find video URL
