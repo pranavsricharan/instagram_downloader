@@ -12,3 +12,4 @@ Instructions:
 Note:
 #1 The images are stored in img/ directory by default
 #2 Only public images/videos can be downloaded
+#3 If GTK is installed then GUI mode will be opened if not CLI mode will be opened

@@ -4,62 +4,60 @@
 ## Enjoy using this application
 import urllib.request
 import re
-print("Instagram image/video downloader")
-print("Developed by @pranavsricharan")
-print()
-ch = 'y'
-while ch == 'y':
-    url = input("Enter an Instagram url: ")
-    while True:
-        try:
-            
-            data = urllib.request.urlopen(url)
-            break
-        except urllib.error.HTTPError:
+from InstagramPost import InstagramPost
+
+# Open GUI mode if GTK exists or open CLI mode
+try:
+    import gi
+    gi.require_version('Gtk', '3.0')
+    from gi.repository import Gtk,Gdk
+
+    class MyWindow(Gtk.Window):
+
+        def __init__(self):
+            builder = Gtk.Builder()
+            builder.add_from_file("gui/window.glade")
+            builder.connect_signals(self)
+            window = builder.get_object("window1")
+            self.statusLabel = builder.get_object("statusLabel")
+            self.urlTxt = builder.get_object("urlTxt")
+            window.connect("delete-event", Gtk.main_quit)
+            window.show_all()
+
+
+        def downloadImg(self,widget):
+            self.statusLabel.set_property("label","Checking URL..." )
+            post = InstagramPost(self.urlTxt.get_property("text"))
+
+            if post.getSuccess():
+                self.statusLabel.set_property("label","Found " + post.getType())
+                post.download()
+                self.statusLabel.set_property("label","Saved at img/" + post.getFilename() + " of program directory")
+            else:
+                self.statusLabel.set_property("label","Error! Please make sure that the URL you've entered is valid or a public instagram post")                              
+    
+    win = MyWindow()
+    Gtk.main()
+	
+except ImportError:
+    print("Instagram image/video downloader")
+    print("Developed by @pranavsricharan")
+    print()
+    ch = 'y'
+    while ch == 'y':
+        url = input("Enter an Instagram url: ")
+        post = InstagramPost(url)
+		
+        while not post.getSuccess():
             print("\n"*3 + "OOPS...Something went wrong...")
             print("The URL you entered doesn't seem to be valid... Please make sure that the URL you've entered is valid or a public instagram post")
             url = input("Enter a valid Instagram public url: ")
-    data = data.read()
-    data = str(data)
-    # Find video URL
-    regex = ".*?<meta property=\"og:video[^:]??\" content=\"(.*?)\".*?\" />"
-    imageUrl = re.match(regex,data)
-    # Check if any video exists
-    if(imageUrl is not None):
-        imageUrl = imageUrl.group(1)
-        print("Found video:",imageUrl)
-        # Open and get the contents of the video
-        image = urllib.request.urlopen(imageUrl)
-        image = image.read()
-        # Get the file name from the URL
-        filename = re.match(".*?/([^/]*?\.*?)$",imageUrl)
-        filename = filename.group(1)
-        # Save the video to the local file
-        file = open("img/"+filename,"wb")
-        file.write(image)
-        file.close()
-        print("File saved at:","img/"+filename,"of program directory")
-    else: # If the URL is not a video
-        #Find the image URL
-        regex = ".*?<meta property=\"og:image\" content=\"(.*?)\?.*?\" />.*?"
-        imageUrl = re.match(regex,data)
-        # Check if any image exists
-        if(imageUrl is not None):
-            imageUrl = imageUrl.group(1)
-            print("Found image:",imageUrl)
-            # Open URL and get image contents
-            image = urllib.request.urlopen(imageUrl)
-            image = image.read()
-            # Get the file name from the URL
-            filename = re.match(".*?/([^/]*?\.jpg)$",imageUrl)
-            filename = filename.group(1)
-            # Save the image to local file
-            file = open("img/"+filename,"wb")
-            file.write(image)
-            file.close()
-            print("File saved at:","img/"+filename,"of program directory")
-        else:
-            print("Some error occured...")
-    ch = input("Another image? (y/n): ")
-    ch = ch.lower()
-x = input("Press return to exit")
+            post = InstagramPost(url)
+			
+        print("Found",post.getType())
+        post.download()
+        print("Saved at img/", post.getFilename(), "of program directory")
+		
+        ch = input("Another image? (y/n): ")
+        ch = ch.lower()
+    x = input("Press return to exit")
