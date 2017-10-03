@@ -31,7 +31,7 @@ class InstagramProfile:
 
             regex = ".*?window._sharedData = (.*?);</script>"
             jsonData = re.match(regex,data).group(1).strip()
-            jsonData = jsonData.replace(r"\'", "'")
+            jsonData = jsonData.replace(r"\'", "'").replace("\\\\", '\\')
 
             jsonObject = json.loads(jsonData)
             media = jsonObject["entry_data"]["ProfilePage"][0]["user"]["media"]
