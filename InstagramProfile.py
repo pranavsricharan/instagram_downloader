@@ -21,15 +21,6 @@ class InstagramProfile:
         hasNext = True
         url = self.base_url
         while hasNext:
-            print(url)
-            #print(url)
-            """req = urllib.request.Request(
-                url,
-                data=None,
-                headers={
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
-                }
-            )"""
             try:
                 data = urllib.request.urlopen(url)
                 data = data.read()
@@ -50,7 +41,6 @@ class InstagramProfile:
             lastId = None
 
             for image in imageList:
-                #print(image["id"], image["code"])
                 lastId = image["id"]
                 imgInfo = {'username': self.username, 'code': image["code"]}
                 self.images.append(imgInfo)
@@ -78,7 +68,3 @@ class InstagramProfile:
             os.makedirs(dirPath)
         pool = mp.Pool()
         pool.map(InstagramProfile.downloadImg, self.images)
-
-if __name__ == '__main__':
-    profile = InstagramProfile("pranavsricharan")
-    profile.download()
